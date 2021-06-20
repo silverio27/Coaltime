@@ -1,27 +1,64 @@
-# App
+# Publicando WebApp em Azure Web Apps
+## Azure CLI
+Esse artigo prioriza a utilização do Azure CLI para fins didáticos, a operação descrita a seguir possui uma experiência muito mais intuitiva utilizando o portal do [azure]("https://portal.azure.com/").
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.1.
+Clique [aqui]("https://docs.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest") para ver a lista completa de comandos do Azure CLI.
 
-## Development server
+## Criar um webapp
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Execute o comando abaixo para fazer login na sua conta do azure.
+```CMD
+az login
+```
+Caso você tenha muitas contas em seu perfil, utilize o comando abaixo para definir uma conta padrão para esse tutorial, assim você garante que qual operação será feita no tenant correto
+```CMD
+az account set --subscription <subscriptionid>
+```
+Crie um grupo de recursos específico pra esse tutorial.
+>Essa é uma prática altamente recomenda. No final desse tutorial podemos excluir o grupo com todos recursos dentro de uma vez, sem se preocupar que algum recurso tenha ficado para trás gerando cobranças indesejadas:
+```CMD
+az group create -n Coaltime -l eastus2
+```
+>Localização: Estamos utilizando o leste dos estados unidos pois é a localização mais barata, em produção escolha a localização mais próxima da sua.
 
-## Code scaffolding
+Utilize o comando abaixo para ver os grupos de recursos da sua conta
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```CMD
+az group list -o table
+```
 
-## Build
+Vamos criar um plano de serviço, será na camada gratuíta e vamos utilizar uma máquina linux
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```CMD
+az appservice plan create -g Coaltime -n Coaltimeplan -l eastus2 --is-linux --sku F1
+```
 
-## Running unit tests
+Utilize o comando abaixo para verificar os planos de serviços dentro do grupo de recursos Coaltime
+```CMD
+az appservice plan list -g Coaltime -o jsonc
+```
+Utilize o comando abaixo para criar o aplicativo web
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+>Execute esse comando na pasta onde está seu repositório git
 
-## Running end-to-end tests
+```CMD
+az webapp create -g Coaltime -p Coaltimeplan -n Coaltimeapp --% --runtime "NODE|14-lts"
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Utilize o comando abaixo para obter a url do aplicativo:
 
-## Further help
+```CMD
+az webapp show -n Coaltimeapp -g Coaltime --query "{url:defaultHostName}" -o tsv
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Utilize o comando a seguir para compactar os arquivos para implantação:
+
+```PS1
+Compress-Archive -Path dist/app/* -DestinationPath dist\app.zip
+```
+Utilize o comando a baixo para fazer a implantação do aplicativo
+
+```CMD
+az webapp deployment source config-zip --src .\dist\app.zip -g Coaltime -n Coaltimeapp
+```
+
