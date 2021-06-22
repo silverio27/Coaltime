@@ -27,10 +27,10 @@ Utilize o comando abaixo para ver os grupos de recursos da sua conta
 az group list -o table
 ```
 
-Vamos criar um plano de serviço, será na camada gratuíta e vamos utilizar uma máquina linux
+Vamos criar um plano de serviço na camada gratuíta
 
 ```CMD
-az appservice plan create -g Coaltime -n Coaltimeplan -l eastus2 --is-linux --sku F1
+az appservice plan create -g Coaltime -n Coaltimeplan -l eastus2 --sku F1
 ```
 >Clique [aqui](https://docs.microsoft.com/pt-br/azure/app-service/overview-hosting-plans) para saber mais sobre os planos de serviços do azure.
 
@@ -40,7 +40,7 @@ Utilize o comando abaixo para verificar os planos de serviços dentro do grupo d
 ```CMD
 az appservice plan list -g Coaltime -o jsonc
 ```
-Utilize o comando abaixo para criar o aplicativo web
+Utilize o comando abaixo para criar o aplicativo web, substitua o nome **Coaltimeapp** por um nome exclusivo.
 
 ```CMD
 az webapp create -g Coaltime -p Coaltimeplan -n Coaltimeapp --% --runtime "NODE|14-lts"
