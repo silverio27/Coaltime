@@ -32,18 +32,20 @@ Vamos criar um plano de serviço, será na camada gratuíta e vamos utilizar uma
 ```CMD
 az appservice plan create -g Coaltime -n Coaltimeplan -l eastus2 --is-linux --sku F1
 ```
+>Clique [aqui](https://docs.microsoft.com/pt-br/azure/app-service/overview-hosting-plans) para saber mais sobre os planos de serviços do azure.
+
 
 Utilize o comando abaixo para verificar os planos de serviços dentro do grupo de recursos Coaltime
+
 ```CMD
 az appservice plan list -g Coaltime -o jsonc
 ```
 Utilize o comando abaixo para criar o aplicativo web
 
->Execute esse comando na pasta onde está seu repositório git
-
 ```CMD
 az webapp create -g Coaltime -p Coaltimeplan -n Coaltimeapp --% --runtime "NODE|14-lts"
 ```
+>Clique [aqui](https://docs.microsoft.com/pt-br/azure/app-service/overview) para saber mais sobre os serviços de aplicativo
 
 Utilize o comando abaixo para obter a url do aplicativo:
 
@@ -54,7 +56,7 @@ az webapp show -n Coaltimeapp -g Coaltime --query "{url:defaultHostName}" -o tsv
 Utilize o comando a seguir para compactar os arquivos para implantação:
 
 ```PS1
-Compress-Archive -Path dist/app/* -DestinationPath dist\app.zip
+Compress-Archive -Path dist/app/* -DestinationPath dist\app.zip -Force
 ```
 Utilize o comando a baixo para fazer a implantação do aplicativo
 
